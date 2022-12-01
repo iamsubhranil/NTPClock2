@@ -6,6 +6,7 @@
 
 #include "clock.h"
 #include "scheduler.h"
+#include "server.h"
 
 // Uncomment according to your hardware type
 #define HARDWARE_TYPE MD_MAX72XX::FC16_HW
@@ -51,6 +52,8 @@ void setup() {
 	Display.print("Hello!");
 	while(WiFi.status() != WL_CONNECTED) {
 	}
+
+	ServerManager::init();
 
 	Display.displayClear();
 	Display.print("Starting..");
