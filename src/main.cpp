@@ -16,26 +16,24 @@
 #define CS_PIN 5
 
 const long gmOffset_hours = 5;
-const long gmOffset_mins = 30;
+const long gmOffset_mins  = 30;
 
-const char *ntpServer = "pool.ntp.org";
-const long gmtOffset_sec = gmOffset_hours * 3600 + gmOffset_mins * 60;
-const int daylightOffset_sec = 0;
+const char *ntpServer          = "pool.ntp.org";
+const long  gmtOffset_sec      = gmOffset_hours * 3600 + gmOffset_mins * 60;
+const int   daylightOffset_sec = 0;
 
 MD_Parola Display = MD_Parola(HARDWARE_TYPE, CS_PIN, MAX_DEVICES);
 
-const char *SSID = "ACAcessPoint";
+const char *SSID     = "ACAcessPoint";
 const char *PASSWORD = "RouteR1913";
 
 Scheduler scheduler;
 
-void syncTime()
-{
+void syncTime() {
 	configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
 }
 
-void setup()
-{
+void setup() {
 
 	Serial.begin(9600);
 
@@ -51,35 +49,31 @@ void setup()
 
 	Display.setTextAlignment(PA_CENTER);
 	Display.print("Hello!");
-	while (WiFi.status() != WL_CONNECTED)
-	{
+	while(WiFi.status() != WL_CONNECTED) {
 	}
 
 	Display.displayClear();
 	Display.print("Starting..");
 	syncTime();
 
-	scheduler.every(30).minute().perform([]()
-										 { syncTime(); });
-	scheduler.every().second().perform([]()
-									   {
+	scheduler.every(30).minute().perform([]() { syncTime(); });
+	scheduler.every().second().perform([]() {
 		Display.displayClear();
-		
+
 		struct tm timeinfo;
-		if (!getLocalTime(&timeinfo))
-		{
+		if(!getLocalTime(&timeinfo)) {
 			Display.print("Bad Time!");
 		} else {
 			// Serial.println("Time retrieved..");
 			Clock::show(Display, timeinfo);
- 		} });
+		}
+	});
 
 	// Display.setTextAlignment(0, PA_CENTER);
 	// Display.setTextAlignment(1, PA_CENTER);
 }
 
-void loop()
-{
+void loop() {
 	scheduler.run();
 	delay(200);
 }
