@@ -1,4 +1,6 @@
-#include <MD_Parola.h>
+#pragma once
+
+#include "displaymanager.h"
 #include <time.h>
 
 struct Clock {
@@ -12,7 +14,7 @@ struct Clock {
 
 	static const char *formatStrings[3];
 
-	static void show(MD_Parola &Display, tm &timeinfo) {
+	static void show(tm &timeinfo) {
 		int mode;
 
 		mode = (currentTick >= clockDuration);
@@ -24,7 +26,8 @@ struct Clock {
 
 		// Serial.println(fmt);
 		strftime(timeStringBuff, 50, fmt, &timeinfo);
-		Display.print(timeStringBuff);
+		DisplayManager::clear();
+		DisplayManager::print(timeStringBuff);
 
 		currentTick++;
 		currentTick = currentTick % period;
