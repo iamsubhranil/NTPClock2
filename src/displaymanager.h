@@ -13,14 +13,28 @@ struct DisplayManager {
 	template <typename U, typename D, typename C>
 	static void printScrollingText(const char *text, U until, D doThen,
 	                               C onComplete) {
+		auto a = display.getTextAlignment();
 		display.displayClear();
-		display.displayScroll(text, PA_CENTER, PA_SCROLL_LEFT, 20);
+		display.displayScroll(text, PA_RIGHT, PA_SCROLL_LEFT, 10);
 		while(until()) {
-			display.displayAnimate();
+			if(display.displayAnimate())
+				display.displayReset();
 			doThen();
 			// 30fps
 			delay(32);
 		}
 		onComplete();
+		display.setTextAlignment(a);
+	}
+
+	static void printScrollingText(const char *text, int duration_millis) {
+		int end = millis() + duration_millis;
+		printScrollingText(
+		    text, [end]() { return millis() < end; }, []() {}, []() {});
+	}
+
+	static void printScrollingText(const char *text) {
+		printScrollingText(
+		    text, []() { return !display.displayAnimate(); }, []() {}, []() {});
 	}
 };
