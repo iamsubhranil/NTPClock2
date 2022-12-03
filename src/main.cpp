@@ -1,8 +1,8 @@
 #include "clock.h"
-#include "config.h"
 #include "displaymanager.h"
 #include "scheduler.h"
 #include "server.h"
+#include "storage.h"
 #include "timemanager.h"
 #include "wifimanager.h"
 
@@ -13,6 +13,7 @@ void setup() {
 	Serial.begin(9600);
 	DisplayManager::init();
 	WiFiManager::init();
+	Storage::init();
 	ServerManager::init();
 	TimeManager::init();
 

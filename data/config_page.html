@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<style>
+#application-form label {
+    display: flex;
+    flex-flow: row nowrap;
+    justify-content: space-between;
+    width: 25%;
+    padding-bottom: 1.5rem;
+}
+#application-form input, select {
+    margin-left: 1rem;
+}
+		</style>
+	</head>
+	<body>
+	<h2>Configure your clock</h2>
+
+	<form action="/update_config" method="get" id="application-form">
+		<label>WiFi SSID
+			<input type="text" name="apname" id="apname" value="">
+		</label>
+		<br> <br>
+		<label>WiFi Password
+			<input type="password" name="appass" id="appass" value="">
+		</label>
+		<br> <br>
+		<label>NTP Server
+			<input type="text" name="ntpserver" id="ntpserver" value="">
+		</label>
+		<br> <br>
+		<label>GMT Offset - Hours
+			<input type="number" name="gmtoff_hours" id="gmtoff_hours" value="">
+		</label>
+		<br> <br>
+		<label>GMT Offset - Minutes
+			<input type="number" name="gmtoff_minutes" id="gmtoff_minutes" value="">
+		</label>
+		<label for="display">Display
+			<label for="display_on">On</label>
+			<input type="radio" id="display_on" name="display_state" value="on">
+			<label for="display_off">Off</label>
+			<input type="radio" id="display_off" name="display_state" value="off">
+		</label>
+		<input type="submit" value="Save" action="/update_config">
+	</form>
+</body>
+</html>

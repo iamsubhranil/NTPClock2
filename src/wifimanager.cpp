@@ -30,7 +30,7 @@ void WiFiManager::init() {
 		DisplayManager::printScrollingText("Failed!");
 		setupAP();
 	} else {
-		DisplayManager::printScrollingText("Connected!");
+		DisplayManager::print("Connected!");
 	}
 }
 
