@@ -14,10 +14,9 @@ void DisplayManager::init() {
 	display.setIntensity(0);
 	display.displayClear();
 
+	printScrollingText("Hi there!");
+	display.displayClear();
 	display.setTextAlignment(PA_CENTER);
-	display.print("Hello!");
-	delay(1000);
-
 	Configuration::onDisplayStateChange(
 	    [](bool &state) { display.displayShutdown(!state); });
 }
