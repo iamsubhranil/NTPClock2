@@ -6,7 +6,7 @@
 #include <Arduino.h>
 
 void TimeManager::init() {
-	Configuration::onNTPServerChange([](std::string &server) { sync(); });
+	Configuration::onNTPServerChange([](String &server) { sync(); });
 	Configuration::onOffsetMinutesChange([](int &offset) { sync(); });
 	Configuration::onOffsetHoursChange([](int &offset) { sync(); });
 	sync();

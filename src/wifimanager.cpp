@@ -8,9 +8,9 @@
 
 void WiFiManager::init() {
 
-	Configuration::onAPNameChange([](std::string &newAPName) { reconnect(); });
+	Configuration::onAPNameChange([](String &newAPName) { reconnect(); });
 	Configuration::onAPPasswordChange(
-	    [](std::string &newAPPassword) { reconnect(); });
+	    [](String &newAPPassword) { reconnect(); });
 
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(Configuration::getAPName().c_str(),
@@ -27,11 +27,10 @@ void WiFiManager::init() {
 	}
 
 	if(!isConnected()) {
-		DisplayManager::print("Failed!");
-		delay(1000);
+		DisplayManager::printScrollingText("Failed!");
 		setupAP();
 	} else {
-		DisplayManager::print("Connected!");
+		DisplayManager::printScrollingText("Connected!");
 	}
 }
 
