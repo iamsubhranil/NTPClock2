@@ -17,9 +17,11 @@
 	<body>
 	<h2>Configure your clock</h2>
 
-	<form action="/update_config" method="get" id="application-form">
+	<form action="/update_config" method="post" id="application-form">
 		%GENERATE_CONFIG_FORM%
 		<input type="submit" value="Save" action="/update_config">
+		<a href="/update">Update</a>
+		<a href="/reboot">Reboot</a>
 	</form>
 </body>
 </html>

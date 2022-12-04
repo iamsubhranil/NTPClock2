@@ -62,20 +62,26 @@ void ServerManager::init() {
 		              generateHTML);
 	});
 
-	webserver.on("/update_config", HTTP_GET,
+	webserver.on("/update_config", HTTP_POST,
 	             [](AsyncWebServerRequest *request) {
-#define OPTION(name, type, defaultValue, displayName)                          \
-	if(request->hasParam(#name)) {                                             \
-		Configuration::set##name(                                              \
-		    #type == "bool" ? parse##type("1")                                 \
-		                    : parse##type(request->getParam(#name)->value())); \
-	} else if(#type == "bool") {                                               \
-		Configuration::set##name(parse##type("0"));                            \
+#define OPTION(name, type, defaultValue, displayName)                    \
+	if(request->hasParam(#name, true)) {                                 \
+		Configuration::set##name(                                        \
+		    #type == "bool"                                              \
+		        ? parse##type("1")                                       \
+		        : parse##type(request->getParam(#name, true)->value())); \
+	} else if(#type == "bool") {                                         \
+		Configuration::set##name(parse##type("0"));                      \
 	}
 #include "config_options.h"
 		             request->redirect("/");
 		             // request->send(200, "text/plain", "OK");
 	             });
+
+	webserver.on("/reboot", HTTP_ANY, [](AsyncWebServerRequest *request) {
+		request->send(200, "text/plain", "Restarting Cloak..");
+		ESP.restart();
+	});
 
 	AsyncElegantOTA.begin(&webserver);
 	webserver.begin();
