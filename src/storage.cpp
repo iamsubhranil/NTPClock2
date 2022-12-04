@@ -6,8 +6,6 @@ bool Storage::initialized = false;
 void Storage::init() {
 	if(!SPIFFS.begin(true)) {
 		Serial.printf("[" __FILE__ ":%d] Failed to mount SPIFFS", __LINE__);
-		DisplayManager::printScrollingText("Failed to mount storage, some "
-		                                   "features may not work!");
 	} else {
 		initialized = true;
 	}

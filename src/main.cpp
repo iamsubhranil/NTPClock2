@@ -1,4 +1,5 @@
 #include "clock.h"
+#include "config.h"
 #include "displaymanager.h"
 #include "scheduler.h"
 #include "server.h"
@@ -11,9 +12,10 @@ Scheduler scheduler;
 void setup() {
 
 	Serial.begin(9600);
+	Storage::init();
+	Configuration::load();
 	DisplayManager::init();
 	WiFiManager::init();
-	Storage::init();
 	ServerManager::init();
 	TimeManager::init();
 

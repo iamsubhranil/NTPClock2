@@ -15,9 +15,13 @@ struct Configuration {
 		name = value;                                           \
 		if(handler_##name)                                      \
 			handler_##name(value);                              \
+		store();                                                \
 	}                                                           \
 	static void on##name##Change(void (*handler)(type & arg)) { \
 		handler_##name = handler;                               \
 	}
 #include "config_options.h"
+
+	static void load();
+	static void store();
 };

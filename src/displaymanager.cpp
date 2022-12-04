@@ -14,7 +14,7 @@ void DisplayManager::init() {
 	display.setIntensity(0);
 	display.displayClear();
 
-	printScrollingText("Hi there!");
+	printScrollingText("Hello there, " + Configuration::getUsername() + "!");
 	display.displayClear();
 	display.setTextAlignment(PA_CENTER);
 	Configuration::onDisplayStateChange(
