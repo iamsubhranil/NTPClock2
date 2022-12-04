@@ -10,28 +10,72 @@ AsyncWebServer ServerManager::webserver(80);
 bool alreadyInit     = false;
 char messageBuff[50] = {0};
 
+String generateField(String id, String label, const String &value,
+                     String inputType) {
+
+	return "<label>" + label + " <input type=\"" + inputType + "\" name=\"" +
+	       id + "\" id=\"" + id + "\" value=\"" + value + "\"" +
+	       ((inputType == "checkbox" && value == "1") ? "checked" : "") +
+	       "></label>";
+}
+
+String generateFieldForString(String id, String label, const String &value) {
+	return generateField(id, label, value, "text");
+}
+
+String generateFieldForint(String id, String label, const int &value) {
+	return generateField(id, label, String(value), "number");
+}
+
+String generateFieldForbool(String id, String label, const bool &value) {
+	return generateField(id, label, String(value), "checkbox");
+}
+
+String generateHTML(const String &replace) {
+	String ret = "<br><br>";
+#define OPTION(name, type, defaultValue, displayName)           \
+	ret += generateFieldFor##type(#name, displayName,           \
+	                              Configuration::get##name()) + \
+	       "<br><br>";
+#include "config_options.h"
+	return ret;
+}
+
+String parseString(const String &str) {
+	return String(str);
+}
+
+int parseint(const String &str) {
+	return str.toInt();
+}
+
+bool parsebool(const String &str) {
+	return str.toInt();
+}
+
 void ServerManager::init() {
 	if(alreadyInit) {
 		webserver.end();
 	}
 	webserver.on("/", HTTP_ANY, [](AsyncWebServerRequest *request) {
-		request->send_P(200, "text/html",
-		                Storage::read("/config_page.html").c_str());
+		request->send(SPIFFS, "/config_page.html", String(), false,
+		              generateHTML);
 	});
 
-	webserver.on(
-	    "/update_config", HTTP_GET, [](AsyncWebServerRequest *request) {
-		    request->send(200, "text/plain", "OK");
-		    if(request->hasParam("display_state")) {
-			    auto a = request->getParam("display_state");
-			    DisplayManager::printScrollingText("Display state changed");
-			    if(a->value() == "on") {
-				    Configuration::setDisplayState(true);
-			    } else if(a->value() == "off") {
-				    Configuration::setDisplayState(false);
-			    }
-		    }
-	    });
+	webserver.on("/update_config", HTTP_GET,
+	             [](AsyncWebServerRequest *request) {
+#define OPTION(name, type, defaultValue, displayName)                          \
+	if(request->hasParam(#name)) {                                             \
+		Configuration::set##name(                                              \
+		    #type == "bool" ? parse##type("1")                                 \
+		                    : parse##type(request->getParam(#name)->value())); \
+	} else if(#type == "bool") {                                               \
+		Configuration::set##name(parse##type("0"));                            \
+	}
+#include "config_options.h"
+		             request->redirect("/");
+		             // request->send(200, "text/plain", "OK");
+	             });
 
 	AsyncElegantOTA.begin(&webserver);
 	webserver.begin();

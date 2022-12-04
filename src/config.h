@@ -3,13 +3,15 @@
 #include <WString.h>
 
 struct Configuration {
-#define OPTION(name, type, defaultValue)                        \
+#define OPTION(name, type, defaultValue, displayName)           \
 	static type name;                                           \
 	static void (*handler_##name)(type & arg);                  \
 	static const type &get##name() {                            \
 		return name;                                            \
 	}                                                           \
 	static void set##name(type value) {                         \
+		if(value == name)                                       \
+			return;                                             \
 		name = value;                                           \
 		if(handler_##name)                                      \
 			handler_##name(value);                              \
