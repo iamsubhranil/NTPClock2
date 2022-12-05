@@ -7,8 +7,6 @@
 #include "timemanager.h"
 #include "wifimanager.h"
 
-Scheduler scheduler;
-
 void setup() {
 
 	Serial.begin(9600);
@@ -19,8 +17,8 @@ void setup() {
 	ServerManager::init();
 	TimeManager::init();
 
-	scheduler.every(30).minute().perform([]() { TimeManager::sync(); });
-	scheduler.every().second().perform([]() {
+	Scheduler::every(30).minute().perform([]() { TimeManager::sync(); });
+	Scheduler::every().second().perform([]() {
 		struct tm timeinfo;
 		bool      success = getLocalTime(&timeinfo);
 		if(!success) {
@@ -37,6 +35,6 @@ void setup() {
 }
 
 void loop() {
-	scheduler.run();
+	Scheduler::run();
 	delay(200);
 }

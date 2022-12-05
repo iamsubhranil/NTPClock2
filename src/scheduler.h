@@ -1,16 +1,17 @@
 #pragma once
 
+#include <Arduino.h>
 #include <stdlib.h>
 
 struct Scheduler {
 	struct Schedulable;
 
   private:
-	Schedulable  *tasks;
-	int           taskCount;
-	unsigned long lastRunMills;
+	static Schedulable  *tasks;
+	static int           taskCount;
+	static unsigned long lastRunMills;
 
-	void schedule(Schedulable *a) {
+	static void schedule(Schedulable *a) {
 		tasks =
 		    (Schedulable *)realloc(tasks, sizeof(Schedulable) * ++taskCount);
 		tasks[taskCount - 1]           = *a;
@@ -18,36 +19,34 @@ struct Scheduler {
 	}
 
   public:
-	Scheduler() : tasks(NULL), taskCount(0), lastRunMills(0) {}
-	~Scheduler() { free(tasks); }
 	struct Schedulable {
 		unsigned long gap_millis;
 		unsigned long remaining;
-		Scheduler    *scheduler;
+		bool          oneshot;
 
 		void (*task)();
 
-		void perform(void (*t)()) {
-			task = t;
-			scheduler->schedule(this);
+		void perform(void (*t)(), bool once = false) {
+			task    = t;
+			oneshot = once;
+			Scheduler::schedule(this);
 		}
 	};
 	struct IntervalSchedulable {
 		unsigned long interval;
-		Scheduler    *scheduler;
 		Schedulable   second(unsigned long sec = 1) {
-			  return Schedulable{interval * sec * 1000, 0, scheduler, nullptr};
+			  return Schedulable{interval * sec * 1000, 0, false, nullptr};
 		}
 		Schedulable minute() { return second(60); }
 		Schedulable hour() { return second(3600); }
 		Schedulable day() { return second(86400); }
 	};
 
-	IntervalSchedulable every(unsigned long interval = 1) {
-		return IntervalSchedulable{interval, this};
+	static IntervalSchedulable every(unsigned long interval = 1) {
+		return IntervalSchedulable{interval};
 	}
 
-	void run() {
+	static void run() {
 		unsigned long now     = millis();
 		unsigned long elapsed = (now - lastRunMills);
 		lastRunMills          = now;
@@ -56,6 +55,16 @@ struct Scheduler {
 				// Serial.printf("Running task %d\n", i);
 				tasks[i].task();
 				tasks[i].remaining = tasks[i].gap_millis;
+				if(tasks[i].oneshot) {
+					// Serial.printf("Removing task %d\n", i);
+					taskCount--;
+					for(int j = i; j < taskCount; j++) {
+						tasks[j] = tasks[j + 1];
+					}
+					tasks = (Schedulable *)realloc(tasks, sizeof(Schedulable) *
+					                                          taskCount);
+					i--;
+				}
 			} else {
 				tasks[i].remaining -= elapsed;
 			}

@@ -5,5 +5,5 @@ struct WiFiManager {
 	static bool isConnected();
 	static void ensureConnected();
 	static void setupAP();
-	static void reconnect();
+	static void reconnect(bool instant = true);
 };

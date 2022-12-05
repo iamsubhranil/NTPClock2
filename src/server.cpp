@@ -74,6 +74,7 @@ bool parsebool(const String &str) {
 void ServerManager::init() {
 	if(alreadyInit) {
 		webserver.end();
+		webserver.reset();
 	}
 	webserver.on("/", HTTP_ANY, [](AsyncWebServerRequest *request) {
 		request->send(SPIFFS, "/config_modern.html", String(), false,

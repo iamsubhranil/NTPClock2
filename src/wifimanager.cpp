@@ -1,44 +1,20 @@
 #include "wifimanager.h"
 #include "config.h"
 #include "displaymanager.h"
+#include "scheduler.h"
 #include "server.h"
 
 #include <DNSServer.h>
 #include <WiFi.h>
 
+static bool scheduledEnsureConnected = false;
+
 void WiFiManager::init() {
 
-	Configuration::onAPNameChange([](String &newAPName) { reconnect(); });
+	Configuration::onAPNameChange([](String &newAPName) { reconnect(false); });
 	Configuration::onAPPasswordChange(
-	    [](String &newAPPassword) { reconnect(); });
-
-	WiFi.mode(WIFI_STA);
-	WiFi.begin(Configuration::getAPName().c_str(),
-	           Configuration::getAPPassword().c_str());
-	int start_mills       = millis();
-	int elapsed_mills     = 0;
-	int check_after_mills = 500;
-	// try for 10 seconds
-	int connection_timeout = 10 * 1000;
-
-	DisplayManager::printScrollingText(
-	    "Connecting to WiFi..",
-	    [&elapsed_mills, &connection_timeout]() {
-		    return WiFiManager::isConnected() ||
-		           elapsed_mills > connection_timeout;
-	    },
-	    [&elapsed_mills, &start_mills]() {
-		    elapsed_mills = millis() - start_mills;
-	    },
-	    []() {
-		    if(!isConnected()) {
-			    DisplayManager::printScrollingText(
-			        "Connecting to WiFi failed!");
-			    setupAP();
-		    } else {
-			    DisplayManager::printScrollingText("Connected to WiFi!");
-		    }
-	    });
+	    [](String &newAPPassword) { reconnect(false); });
+	reconnect();
 }
 
 void WiFiManager::setupAP() {
@@ -64,18 +40,53 @@ void WiFiManager::setupAP() {
 		    DisplayManager::printScrollingText("Connected to WiFi!");
 		    dnsServer.stop();
 		    WiFi.mode(WIFI_STA);
-		    reconnect();
-		    while(!isConnected()) {
-		    }
 		    // restart our server
 		    ServerManager::init();
 	    });
 }
 
-void WiFiManager::reconnect() {
+void ensureConnection() {
+	int start_mills       = millis();
+	int elapsed_mills     = 0;
+	int check_after_mills = 500;
+	// try for 10 seconds
+	int connection_timeout = 10 * 1000;
+
+	DisplayManager::printScrollingText(
+	    "Connecting to WiFi..",
+	    [&elapsed_mills, &connection_timeout]() {
+		    return WiFiManager::isConnected() ||
+		           elapsed_mills > connection_timeout;
+	    },
+	    [&elapsed_mills, &start_mills]() {
+		    elapsed_mills = millis() - start_mills;
+	    },
+	    []() {
+		    if(!WiFiManager::isConnected()) {
+			    DisplayManager::printScrollingText(
+			        "Connection to WiFi failed!");
+			    WiFiManager::setupAP();
+		    } else {
+			    DisplayManager::printScrollingText("Connected to WiFi!");
+		    }
+	    });
+	scheduledEnsureConnected = false;
+}
+
+void WiFiManager::reconnect(bool instant) {
 	WiFi.disconnect();
 	WiFi.begin(Configuration::getAPName().c_str(),
 	           Configuration::getAPPassword().c_str());
+
+	if(instant) {
+		ensureConnection();
+		return;
+	}
+
+	if(!scheduledEnsureConnected) {
+		scheduledEnsureConnected = true;
+		Scheduler::every(10).second().perform(ensureConnection, true);
+	}
 }
 
 bool WiFiManager::isConnected() {
@@ -84,6 +95,6 @@ bool WiFiManager::isConnected() {
 
 void WiFiManager::ensureConnected() {
 	while(!isConnected()) {
-		init();
+		reconnect();
 	}
 }
