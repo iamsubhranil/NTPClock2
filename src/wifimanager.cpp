@@ -1,6 +1,7 @@
 #include "wifimanager.h"
 #include "config.h"
 #include "displaymanager.h"
+#include "ledmanager.h"
 #include "scheduler.h"
 #include "server.h"
 
@@ -30,7 +31,7 @@ void WiFiManager::setupAP() {
 
 	// restart our webserver
 	ServerManager::init();
-
+	LEDManager::blink(LEDManager::BLUE);
 	DisplayManager::printScrollingText(
 	    "Connect to ClockAP to configure..",
 	    []() { return WiFiManager::isConnected(); },
@@ -42,6 +43,7 @@ void WiFiManager::setupAP() {
 		    WiFi.mode(WIFI_STA);
 		    // restart our server
 		    ServerManager::init();
+		    LEDManager::off(LEDManager::BLUE);
 	    });
 }
 

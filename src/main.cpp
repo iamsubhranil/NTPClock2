@@ -1,6 +1,7 @@
 #include "clock.h"
 #include "config.h"
 #include "displaymanager.h"
+#include "ledmanager.h"
 #include "scheduler.h"
 #include "server.h"
 #include "storage.h"
@@ -13,6 +14,7 @@ void setup() {
 	Storage::init();
 	Configuration::load();
 	DisplayManager::init();
+	LEDManager::init();
 	WiFiManager::init();
 	ServerManager::init();
 	TimeManager::init();
