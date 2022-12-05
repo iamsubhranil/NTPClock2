@@ -13,10 +13,28 @@ char messageBuff[50] = {0};
 String generateField(String id, String label, const String &value,
                      String inputType) {
 
-	return "<label>" + label + " <input type=\"" + inputType + "\" name=\"" +
-	       id + "\" id=\"" + id + "\" value=\"" + value + "\"" +
-	       ((inputType == "checkbox" && value == "1") ? "checked" : "") +
-	       "></label>";
+	/*
+
+	        <div class="col-12">
+	        <div class="form-check">
+	            <input class="form-check-input" type="checkbox" id="gridCheck">
+	            <label class="form-check-label" for="gridCheck">
+	            Check me out
+	            </label>
+	        </div>
+	*/
+	if(inputType == "checkbox") {
+		return "<div class=\"col-12\"><div class=\"form-check\"><input "
+		       "class=\"form-check-input\" type=\"" +
+		       inputType + "\" id=\"" + id + "\" " + " name=\"" + id + "\" " +
+		       (value == "1" ? "checked" : "") +
+		       "><label class=\"form-check-label\" for=\"" + id + "\">" +
+		       label + "</label></div></div>";
+	}
+	return "<div class=\"col-12\"><label for=\"" + id +
+	       "\" class=\"form-label\">" + label + "</label><input type=\"" +
+	       inputType + "\" class=\"form-control\" id=\"" + id + "\" " +
+	       "name=\"" + id + "\" value=\"" + value + "\"></div>";
 }
 
 String generateFieldForString(String id, String label, const String &value) {
@@ -32,11 +50,10 @@ String generateFieldForbool(String id, String label, const bool &value) {
 }
 
 String generateHTML(const String &replace) {
-	String ret = "<br><br>";
-#define OPTION(name, type, defaultValue, displayName)           \
-	ret += generateFieldFor##type(#name, displayName,           \
-	                              Configuration::get##name()) + \
-	       "<br><br>";
+	String ret = "";
+#define OPTION(name, type, defaultValue, displayName) \
+	ret += generateFieldFor##type(#name, displayName, \
+	                              Configuration::get##name());
 #include "config_options.h"
 	return ret;
 }
@@ -58,7 +75,7 @@ void ServerManager::init() {
 		webserver.end();
 	}
 	webserver.on("/", HTTP_ANY, [](AsyncWebServerRequest *request) {
-		request->send(SPIFFS, "/config_page.html", String(), false,
+		request->send(SPIFFS, "/config_modern.html", String(), false,
 		              generateHTML);
 	});
 
