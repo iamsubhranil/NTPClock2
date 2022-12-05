@@ -31,7 +31,7 @@ void Configuration::load() {
 	}
 
 #define OPTION(name, type, defaultValue, displayName) \
-	set##name(doc[#name].as<type>());
+	name = doc[#name].as<type>();
 #include "config_options.h"
 }
 
