@@ -15,37 +15,44 @@ void WiFiManager::init() {
 	WiFi.mode(WIFI_STA);
 	WiFi.begin(Configuration::getAPName().c_str(),
 	           Configuration::getAPPassword().c_str());
+	int start_mills       = millis();
 	int elapsed_mills     = 0;
 	int check_after_mills = 500;
 	// try for 10 seconds
 	int connection_timeout = 10 * 1000;
 
-	DisplayManager::print("Connecting..");
-	while(!isConnected() && elapsed_mills < 10000) {
-		delay(check_after_mills);
-		elapsed_mills += check_after_mills;
-	}
-
-	if(!isConnected()) {
-		DisplayManager::printScrollingText("Failed!");
-		setupAP();
-	} else {
-		DisplayManager::print("Connected!");
-	}
+	DisplayManager::printScrollingText(
+	    "Connecting to WiFi..",
+	    [&elapsed_mills, &connection_timeout]() {
+		    return WiFiManager::isConnected() ||
+		           elapsed_mills > connection_timeout;
+	    },
+	    [&elapsed_mills, &start_mills]() {
+		    elapsed_mills = millis() - start_mills;
+	    },
+	    []() {
+		    if(!isConnected()) {
+			    DisplayManager::printScrollingText(
+			        "Connecting to WiFi failed!");
+			    setupAP();
+		    } else {
+			    DisplayManager::printScrollingText("Connected to WiFi!");
+		    }
+	    });
 }
 
 void WiFiManager::setupAP() {
 	WiFi.mode(WIFI_AP_STA);
-	IPAddress googleDNS = IPAddress(8, 8, 8, 8);
-	WiFi.softAPConfig(googleDNS, googleDNS, IPAddress(255, 255, 255, 0));
+	IPAddress clockIP = IPAddress(192, 168, 3, 1);
+	WiFi.softAPConfig(clockIP, clockIP, IPAddress(255, 255, 255, 0));
 	WiFi.softAP("ClockAP");
 
 	// setup DNS
 	DNSServer dnsServer;
 	dnsServer.setErrorReplyCode(DNSReplyCode::NoError);
-	dnsServer.start(53 /* port */, "*", googleDNS);
+	dnsServer.start(53 /* port */, "*", clockIP);
 
-	// start our webserver if not yet started
+	// restart our webserver
 	ServerManager::init();
 
 	DisplayManager::printScrollingText(
@@ -54,8 +61,7 @@ void WiFiManager::setupAP() {
 	    [&dnsServer]() { dnsServer.processNextRequest(); },
 	    [&dnsServer]() {
 		    DisplayManager::clear();
-		    DisplayManager::print("Connected!");
-		    delay(1000);
+		    DisplayManager::printScrollingText("Connected to WiFi!");
 		    dnsServer.stop();
 		    WiFi.mode(WIFI_STA);
 		    reconnect();

@@ -2,6 +2,7 @@
 #include "config.h"
 #include "displaymanager.h"
 #include "storage.h"
+#include "wifimanager.h"
 #include <AsyncElegantOTA.h>
 #include <WiFi.h>
 
@@ -78,6 +79,10 @@ void ServerManager::init() {
 		request->send(SPIFFS, "/config_modern.html", String(), false,
 		              generateHTML);
 	});
+	webserver.onNotFound([](AsyncWebServerRequest *request) {
+		request->send(SPIFFS, "/config_modern.html", String(), false,
+		              generateHTML);
+	});
 
 	webserver.on("/update_config", HTTP_POST,
 	             [](AsyncWebServerRequest *request) {
@@ -103,9 +108,12 @@ void ServerManager::init() {
 	AsyncElegantOTA.begin(&webserver);
 	webserver.begin();
 
-	String s = WiFi.localIP().toString();
-	snprintf(messageBuff, 50, "Visit http://%s to configure..", s.c_str());
-	DisplayManager::printScrollingText(messageBuff);
+	if(WiFiManager::isConnected()) {
+		IPAddress ip = WiFi.localIP();
+		String    s  = ip.toString();
+		snprintf(messageBuff, 50, "Visit http://%s to configure..", s.c_str());
+		DisplayManager::printScrollingText(messageBuff);
+	}
 
 	alreadyInit = true;
 }
