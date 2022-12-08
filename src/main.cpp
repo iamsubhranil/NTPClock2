@@ -11,6 +11,7 @@
 void setup() {
 
 	Serial.begin(9600);
+	Scheduler::init();
 	Storage::init();
 	Configuration::load();
 	DisplayManager::init();
@@ -32,11 +33,7 @@ void setup() {
 		}
 	});
 
-	// Display.setTextAlignment(0, PA_CENTER);
-	// Display.setTextAlignment(1, PA_CENTER);
+	Scheduler::begin();
 }
 
-void loop() {
-	Scheduler::run();
-	delay(200);
-}
+void loop() {}
