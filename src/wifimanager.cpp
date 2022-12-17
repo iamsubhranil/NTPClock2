@@ -32,13 +32,15 @@ void WiFiManager::setupAP() {
 	// restart our webserver
 	ServerManager::init();
 	LEDManager::blink(LEDManager::BLUE);
-	DisplayManager::printScrollingText(
-	    "Connect to ClockAP to configure..",
-	    []() { return WiFiManager::isConnected(); },
+	DisplayManager::printAnimatingText(
+	    {"\x1a    ClockAP    \x1b", "\x1a   ClockAP   \x1b",
+	     "\x1a  ClockAP  \x1b", "\x1a ClockAP \x1b"},
+	    250, []() { return WiFiManager::isConnected(); },
 	    [&dnsServer]() { dnsServer.processNextRequest(); },
 	    [&dnsServer]() {
 		    DisplayManager::clear();
-		    DisplayManager::printScrollingText("Connected to WiFi!");
+		    DisplayManager::print("WiFi: OK \x02");
+		    delay(1000);
 		    dnsServer.stop();
 		    WiFi.mode(WIFI_STA);
 		    // restart our server
@@ -54,8 +56,8 @@ void ensureConnection() {
 	// try for 10 seconds
 	int connection_timeout = 10 * 1000;
 
-	DisplayManager::printScrollingText(
-	    "Connecting to WiFi..",
+	DisplayManager::printAnimatingText(
+	    {"WiFi: \x07", "WiFi: \x09", "WiFi: \x0a", "WiFi: \x08"}, 250,
 	    [&elapsed_mills, &connection_timeout]() {
 		    return WiFiManager::isConnected() ||
 		           elapsed_mills > connection_timeout;
@@ -65,11 +67,11 @@ void ensureConnection() {
 	    },
 	    []() {
 		    if(!WiFiManager::isConnected()) {
-			    DisplayManager::printScrollingText(
-			        "Connection to WiFi failed!");
+			    DisplayManager::print("WiFi: Failed \x01");
 			    WiFiManager::setupAP();
 		    } else {
-			    DisplayManager::printScrollingText("Connected to WiFi!");
+			    DisplayManager::print("WiFi: OK \x02");
+			    delay(1000);
 		    }
 	    });
 	scheduledEnsureConnected = false;

@@ -32,6 +32,78 @@ struct DisplayManager {
 		onComplete();
 	}
 
+	template <typename U, typename D, typename C>
+	static void printTextWithEffect(const char *text, U until, D doThen,
+	                                C            onComplete,
+	                                textEffect_t effectIn  = PA_RANDOM,
+	                                textEffect_t effectOut = PA_RANDOM) {
+		auto a = display.getTextAlignment();
+		display.displayClear();
+		display.displayText(text, PA_CENTER, 7, 30, effectIn, effectOut);
+		while(!until()) {
+			if(display.displayAnimate())
+				display.displayReset();
+			doThen();
+			// 30fps
+			delay(32);
+		}
+		display.setTextAlignment(a);
+		onComplete();
+	}
+
+	static void printTextWithEffect(const String &str, int durationMillis,
+	                                textEffect_t effectIn  = PA_RANDOM,
+	                                textEffect_t effectOut = PA_RANDOM) {
+		printTextWithEffect(str.c_str(), durationMillis, effectIn, effectOut);
+	}
+
+	static void printTextWithEffect(const char *str, int durationMillis,
+	                                textEffect_t effectIn  = PA_RANDOM,
+	                                textEffect_t effectOut = PA_RANDOM) {
+		int end = millis() + durationMillis;
+		printTextWithEffect(
+		    str, [end]() { return millis() > end; }, []() {}, []() {}, effectIn,
+		    effectOut);
+	}
+
+	static void printTextWithEffect(const char  *str,
+	                                textEffect_t effectIn  = PA_RANDOM,
+	                                textEffect_t effectOut = PA_RANDOM) {
+		printTextWithEffect(
+		    str, []() { return display.displayAnimate(); }, []() {}, []() {},
+		    effectIn, effectOut);
+	}
+
+	static void printTextWithEffect(const String &str,
+	                                textEffect_t  effectIn  = PA_RANDOM,
+	                                textEffect_t  effectOut = PA_RANDOM) {
+		printTextWithEffect(
+		    str.c_str(), []() { return display.displayAnimate(); }, []() {},
+		    []() {}, effectIn, effectOut);
+	}
+
+	template <typename U, typename D, typename C>
+	static void printAnimatingText(std::initializer_list<const char *> text,
+	                               int frameTimeMs, U until, D doThen,
+	                               C onComplete) {
+		auto a = display.getTextAlignment();
+		display.displayClear();
+		display.setTextAlignment(PA_CENTER);
+		auto currentText = text.begin();
+		while(!until()) {
+			display.displayClear();
+			display.printf("%s", *currentText);
+			doThen();
+			currentText++;
+			if(currentText == text.end())
+				currentText = text.begin();
+			delay(frameTimeMs);
+		}
+		display.displayClear();
+		display.setTextAlignment(a);
+		onComplete();
+	}
+
 	static void printScrollingText(const String &str, int duration) {
 		printScrollingText(str.c_str(), duration);
 	}
