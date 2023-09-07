@@ -1,0 +1,28 @@
+{
+	"folders": [
+		{
+			"name": "NTPClock2",
+			"path": ".."
+		}
+	],
+	"settings": {
+		"files.associations": {
+			"esp32-hal.h": "c",
+			"sntp.h": "c",
+			"esp_netif.h": "c",
+			"typeinfo": "cpp",
+			"array": "cpp",
+			"functional": "cpp",
+			"istream": "cpp",
+			"ostream": "cpp",
+			"tuple": "cpp",
+			"type_traits": "cpp",
+			"utility": "cpp",
+			"*.tcc": "cpp",
+			"optional": "cpp",
+			"system_error": "cpp",
+			"regex": "cpp",
+			"initializer_list": "cpp"
+		}
+	}
+}
