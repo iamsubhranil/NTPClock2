@@ -23,20 +23,20 @@ const textEffect_t Effects[] = {
     PA_SPRITE, ///< Text enters and exits using user defined sprite
 #endif
 #if ENA_MISC
-    PA_SLICE,    ///< Text enters and exits a slice (column) at a time from the
+    // PA_SLICE,    ///< Text enters and exits a slice (column) at a time from the
                  ///< right
     PA_MESH,     ///< Text enters and exits in columns moving in alternate
                  ///< direction (U/D)
     PA_FADE,     ///< Text enters and exits by fading from/to 0 and intensity
                  ///< setting
     PA_DISSOLVE, ///< Text dissolves from one display to another
-    PA_BLINDS,   ///< Text is replaced behind vertical blinds
-    PA_RANDOM,   ///< Text enters and exits as random dots
+    // PA_BLINDS,   ///< Text is replaced behind vertical blinds
+    // PA_RANDOM,   ///< Text enters and exits as random dots
 #endif           // ENA_MISC
 #if ENA_WIPE
-    PA_WIPE, ///< Text appears/disappears one column at a time, looks like it
+    // PA_WIPE, ///< Text appears/disappears one column at a time, looks like it
              ///< is wiped on and off
-    PA_WIPE_CURSOR, ///< WIPE with a light bar ahead of the change
+        // PA_WIPE_CURSOR, ///< WIPE with a light bar ahead of the change
 #endif              // ENA_WIPES
 #if ENA_SCAN
     PA_SCAN_HORIZ,  ///< Scan the LED column one at a time then
