@@ -120,7 +120,7 @@ void ServerManager::init() {
 	if(WiFiManager::isConnected()) {
 		IPAddress ip = WiFi.localIP();
 		String    s  = ip.toString();
-		snprintf(messageBuff, 50, "Visit http://%s to configure..", s.c_str());
+		snprintf(messageBuff, 50, "IP: %s", s.c_str());
 		DisplayManager::printScrollingText(messageBuff);
 	}
 
