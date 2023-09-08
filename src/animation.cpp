@@ -10,7 +10,7 @@ int Animation::tick = 0;
 int Animation::currentFrame = 0;
 char Animation::frameText[Animation::frameTextSize] = {0};
 
-void Animation::build() {
+void Animation::init() {
     if(frameCount) {
         free(frames);
     }

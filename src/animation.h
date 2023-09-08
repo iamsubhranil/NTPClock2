@@ -16,7 +16,7 @@ struct Animation {
     static const int frameTextSize = 50;
     static char frameText[frameTextSize];
 
-    static void build();
+    static void init();
     static int addFrame(int duration, 
         void(*)(char *text, int textSize, int tick));
     static void repeat(int frameID, int times = 1);
