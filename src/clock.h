@@ -1,6 +1,7 @@
 #pragma once
 
 #include "displaymanager.h"
+#include "BMPManager.h"
 #include <time.h>
 
 struct Clock {
@@ -25,7 +26,10 @@ struct Clock {
 		const char *fmt = formatStrings[idx];
 
 		// Serial.println(fmt);
-		strftime(timeStringBuff, 50, fmt, &timeinfo);
+		size_t written = strftime(timeStringBuff, 50, fmt, &timeinfo);
+		if(idx == 2) {
+			snprintf(timeStringBuff + written, 50 - written, "%d\x90" "c", (int)BMPManager::getTemperature());
+		}
 		DisplayManager::clear();
 		DisplayManager::print(timeStringBuff);
 

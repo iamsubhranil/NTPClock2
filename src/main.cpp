@@ -1,3 +1,4 @@
+#include "BMPManager.h"
 #include "clock.h"
 #include "config.h"
 #include "displaymanager.h"
@@ -15,6 +16,7 @@ void setup() {
 	Storage::init();
 	Configuration::load();
 	DisplayManager::init();
+	BMPManager::init();
 	LEDManager::init();
 	WiFiManager::init();
 	ServerManager::init();
