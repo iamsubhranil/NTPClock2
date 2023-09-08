@@ -27,7 +27,7 @@ void setup() {
 	Clock::init();
 	WeatherManager::init();
 
-	Scheduler::every(3).minute().perform([]() { WeatherManager::sync(); });
+	Scheduler::every(1).minute().perform([]() { WeatherManager::sync(); });
 	Scheduler::every(30).minute().perform([]() { TimeManager::sync(); });
 	Scheduler::every().second().perform([]() {
 		Animation::performTick();
