@@ -9,6 +9,7 @@
 char weatherAPI[110] = {0};
 const char *weatherAPIFormat = "https://api.open-meteo.com/v1/forecast?latitude=%.3f&longitude=%.3f&current_weather=true&timezone=auto";
 WeatherManager::Weather WeatherManager::currentWeather = {0};
+bool syncing = false;
 
 void WeatherManager::init() {
     Animation::addFrame(3, [](char *text, int textSize, int tick) {
@@ -55,8 +56,9 @@ void WeatherManager::init() {
 }
 
 void WeatherManager::sync() {
-    if(!WiFiManager::isConnected())
+    if(!WiFiManager::isConnected() || syncing)
         return;
+    syncing = true;
     HTTPClient httpClient;
     snprintf(weatherAPI, sizeof(weatherAPI), weatherAPIFormat, Configuration::getLatitude(), Configuration::getLongitude());
     Serial.printf("Weather API: %s", weatherAPI);
@@ -64,6 +66,7 @@ void WeatherManager::sync() {
     int response = httpClient.GET();
     if(response != 200) {
         Serial.printf("Weather API failed: %d\n", response);
+        syncing = false;
         return;
     }
 
@@ -73,6 +76,7 @@ void WeatherManager::sync() {
 
     if(error) {
         Serial.printf("Failed to parse response: %s %d %d\n", error.c_str(), httpClient.getSize(), esp_get_free_heap_size());
+        syncing = false;
         return;
     }
 
@@ -80,4 +84,6 @@ void WeatherManager::sync() {
     currentWeather.weathercode = document["current_weather"]["weathercode"];
     currentWeather.windspeed = document["current_weather"]["windspeed"];
     currentWeather.is_day = document["current_weather"]["is_day"];
+
+    syncing = false;
 }

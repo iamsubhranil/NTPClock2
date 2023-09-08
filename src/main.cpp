@@ -27,7 +27,11 @@ void setup() {
 	Clock::init();
 	WeatherManager::init();
 
-	Scheduler::every(1).minute().perform([]() { WeatherManager::sync(); });
+	Scheduler::every(1).minute().perform([]() { 
+		Scheduler::scheduleInBackground([](void *param) {
+			WeatherManager::sync();
+			vTaskDelete(NULL);
+		}, "WeatherSync", 10000, NULL, 10); });
 	Scheduler::every(30).minute().perform([]() { TimeManager::sync(); });
 	Scheduler::every().second().perform([]() {
 		Animation::performTick();

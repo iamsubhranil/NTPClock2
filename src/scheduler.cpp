@@ -39,6 +39,10 @@ unsigned long Scheduler::schedule(Schedulable *a) {
 	return a->taskID;
 }
 
+void Scheduler::scheduleInBackground(void(*run)(void*), const char* name, int stackSize, void *parameters, int priority) {
+	xTaskCreatePinnedToCore(run, name, stackSize, parameters, priority, NULL, !runningOnCore);
+}
+
 void Scheduler::unschedule(unsigned long taskID) {
 	if(xPortGetCoreID() != runningOnCore) {
 		// if we are not running on the core the scheduler is running on, we

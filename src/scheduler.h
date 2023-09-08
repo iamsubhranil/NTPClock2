@@ -59,4 +59,7 @@ struct Scheduler {
 	static void unschedule(unsigned long taskID);
 	static void begin();
 	static void init();
+
+	// schedule a task in the opposite core of where the scheduler is running
+	static void scheduleInBackground(void(*run)(void*), const char* name, int stackSize, void *parameters, int priority);
 };
