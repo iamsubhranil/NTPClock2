@@ -11,5 +11,7 @@ OPTION(Username, String, "Subhranil", "Your name")
 OPTION(DisplayState, bool, true, "Display On")
 OPTION(TempFahrenhite, bool, false, "Temperature in °F")
 OPTION(Clock24, bool, false, "24 Hour Clock")
+OPTION(Latitude, float, 22.5626, "Latitude")
+OPTION(Longitude, float, 88.363, "Longitude")
 
 #undef OPTION

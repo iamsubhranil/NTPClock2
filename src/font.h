@@ -201,20 +201,20 @@ MD_MAX72XX::fontType_t ClockFont[] PROGMEM = {
     76, // 189 - '½ Vulgar fraction one half'
     9, 21, 85, 63, 16, 8, 4, 30, 17,
     124,                     // 190 - '¾ Vulgar fraction three quarters'
-    5, 48, 72, 72, 77, 64,   // 191 - '¿ Inverted Question Mark'
-    5, 120, 21, 22, 20, 120, // 192 - 'À Latin Capital Letter A with grave'
-    5, 120, 20, 22, 21, 120, // 193 - 'Á Latin Capital letter A with acute'
-    5, 122, 21, 20, 21, 122, // 194 - 'Â Latin Capital letter A with
-                             // circumflex'
-    5, 120, 22, 21, 22, 121, // 195 - 'Ã Latin Capital letter A with tilde'
-    5, 120, 21, 20, 21, 120, // 196 - 'Ä Latin Capital letter A with
-                             // diaeresis'
-    5, 120, 20, 21, 20, 120, // 197 - 'Å Latin Capital letter A with ring
-                             // above'
-    7, 126, 9, 9, 127, 73, 73, 65, // 198 - 'Æ Latin Capital letter Æ'
-    5, 158, 161, 97, 33, 33,       // 199 - 'Ç Latin Capital letter C with
-                                   // cedilla'
-    5, 124, 84, 85, 70, 68, // 200 - 'È Latin Capital letter E with grave'
+	8, 0, 14, 17, 17, 0, 0, 0, 0, 	// 191 - Superscript C  
+	8, 0, 31, 5, 5, 0, 0, 0, 0, 	// 192 - Superscript F
+	8, 28, 34, 71, 72, 83, 86, 52, 0,    	// 193 - Clear moon
+	8, 28, 34, 71, 72, 80, 80, 48, 0,    	// 194 - Partly clear moon    
+	8, 129, 90, 60, 126, 126, 60, 90, 129, 	// 195 - Clear sun
+	8, 0, 60, 126, 126, 126, 126, 60, 0, 	// 196 - Party clear sun
+	8, 16, 44, 34, 34, 36, 34, 18, 28, 	    // 197 - Cloudy
+	8, 8, 22, 17, 209, 18, 17, 9, 14, 	    // 198 - Slight rain 
+	8, 8, 22, 209, 17, 18, 209, 9, 14, 	    // 199 - Moderate rain
+	8, 8, 214, 17, 209, 18, 209, 9, 14, 	// 200 - Heavy rain
+	8, 16, 152, 84, 114, 37, 23, 13, 4, 	// 201 - Thunder
+	8, 8, 22, 81, 209, 210, 81, 9, 14, 	    // 202 - Fog
+	8, 8, 150, 81, 145, 82, 145, 73, 14, 	// 203 - Drizzle
+	8, 165, 102, 231, 24, 24, 231, 102, 165,// 204 - Snow
     5, 124, 84, 86, 69, 68, // 201 - 'É Latin Capital letter E with acute'
     5, 126, 85, 84, 69, 70, // 202 - 'Ê Latin Capital letter E with
                             // circumflex'

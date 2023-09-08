@@ -31,8 +31,11 @@ void Configuration::load() {
 	}
 
 #define OPTION(name, type, defaultValue, displayName) \
-	name = doc[#name].as<type>();
+	if(doc.containsKey(#name)) \
+		name = doc[#name].as<type>();
 #include "config_options.h"
+
+	configFile.close();
 }
 
 void Configuration::store() {
