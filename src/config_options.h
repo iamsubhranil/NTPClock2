@@ -10,5 +10,6 @@ OPTION(OffsetMinutes, int, 30, "GMT Offset Minutes")
 OPTION(Username, String, "Subhranil", "Your name")
 OPTION(DisplayState, bool, true, "Display On")
 OPTION(TempFahrenhite, bool, false, "Temperature in °F")
+OPTION(Clock24, bool, false, "24 Hour Clock")
 
 #undef OPTION

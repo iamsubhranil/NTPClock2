@@ -1,5 +1,6 @@
 #pragma once
 
+#include "config.h"
 #include "displaymanager.h"
 #include "BMPManager.h"
 #include <time.h>
@@ -13,21 +14,25 @@ struct Clock {
 	static const int period = clockDuration + dateDuration;
 	static int       currentTick;
 
-	static const char *formatStrings[3];
+	static const char *formatStrings[5];
 
 	static void show(tm &timeinfo) {
-		int mode;
+		int idx;
 
-		mode = (currentTick >= clockDuration);
+		if(currentTick < clockDuration) {
+			idx = currentTick % 2;
+			if(Configuration::getClock24())
+				idx += 2;
+		} else {
+			idx = 4;
+		}
 
-		int idx = mode + ((currentTick < clockDuration) & (currentTick % 2)) +
-		          (currentTick >= clockDuration);
 		// Serial.printf("tick: %d mode: %d idx: %d", currentTick, mode, idx);
 		const char *fmt = formatStrings[idx];
 
 		// Serial.println(fmt);
 		size_t written = strftime(timeStringBuff, 50, fmt, &timeinfo);
-		if(idx == 2) {
+		if(idx == 4) {
 			snprintf(timeStringBuff + written, 50 - written, "%s", (int)BMPManager::getTemperatureString());
 		}
 		DisplayManager::clear();
