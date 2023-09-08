@@ -46,6 +46,10 @@ String generateFieldForint(String id, String label, const int &value) {
 	return generateField(id, label, String(value), "number");
 }
 
+String generateFieldForfloat(String id, String label, const float &value) {
+	return generateField(id, label, String(value), "number");
+}
+
 String generateFieldForbool(String id, String label, const bool &value) {
 	return generateField(id, label, String(value), "checkbox");
 }
@@ -69,6 +73,10 @@ int parseint(const String &str) {
 
 bool parsebool(const String &str) {
 	return str.toInt();
+}
+
+float parsefloat(const String &str) {
+	return str.toFloat();
 }
 
 void ServerManager::init() {
