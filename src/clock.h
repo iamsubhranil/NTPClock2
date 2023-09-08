@@ -28,7 +28,7 @@ struct Clock {
 		// Serial.println(fmt);
 		size_t written = strftime(timeStringBuff, 50, fmt, &timeinfo);
 		if(idx == 2) {
-			snprintf(timeStringBuff + written, 50 - written, "%d\x90" "c", (int)BMPManager::getTemperature());
+			snprintf(timeStringBuff + written, 50 - written, "%s", (int)BMPManager::getTemperatureString());
 		}
 		DisplayManager::clear();
 		DisplayManager::print(timeStringBuff);

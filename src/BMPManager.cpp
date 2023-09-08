@@ -1,4 +1,6 @@
 #include "BMPManager.h"
+#include "config.h"
+
 #include <Adafruit_BMP280.h>
 #include <Wire.h>
 
@@ -10,6 +12,7 @@
 Adafruit_BMP280 bmpSensor;
 
 void BMPManager::init() {
+	Configuration::onTempFahrenhiteChange([](bool &arg) {});
 	scanSensors();
     
     bmpSensor.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */
@@ -59,7 +62,17 @@ void BMPManager::scanSensors() {
 }
 
 float BMPManager::getTemperature() {
-    return bmpSensor.readTemperature();
+    float temp = bmpSensor.readTemperature();
+	if(Configuration::getTempFahrenhite()) {
+		temp = (temp * 9)/5 + 32;
+	}
+	return temp;
+}
+
+const char* BMPManager::getTemperatureString() {
+	static char tempString[50] = {0};
+	snprintf(tempString, 50, "%d\x90%s", (int)getTemperature(), Configuration::getTempFahrenhite() ? "F" : "c");
+	return tempString;
 }
 
 float BMPManager::getAltitude() {

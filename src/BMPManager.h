@@ -6,4 +6,5 @@ struct BMPManager {
     static float getPressure();
     static float getAltitude();
     static void scanSensors();
+    static const char* getTemperatureString();
 };
