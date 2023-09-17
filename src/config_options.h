@@ -13,5 +13,6 @@ OPTION(TempFahrenhite, bool, false, "Temperature in °F")
 OPTION(Clock24, bool, false, "24 Hour Clock")
 OPTION(Latitude, float, 22.5626, "Latitude")
 OPTION(Longitude, float, 88.363, "Longitude")
+OPTION(ShowOutdoorTemperature, bool, true, "Show Outdoor Temperature")
 
 #undef OPTION

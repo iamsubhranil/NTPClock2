@@ -1,5 +1,6 @@
 #include "BMPManager.h"
 #include "config.h"
+#include "weathermanager.h"
 
 #include <Adafruit_BMP280.h>
 #include <Wire.h>
@@ -9,17 +10,15 @@
 #define BMP_MOSI (11)
 #define BMP_CS   (10)
 
-Adafruit_BMP280 bmpSensor;
+static Adafruit_BMP280 bmpSensor;
+static bool sensorFound = false;
 
 void BMPManager::init() {
 	Configuration::onTempFahrenhiteChange([](bool &arg) {});
-	scanSensors();
-    
-    bmpSensor.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */
-            Adafruit_BMP280::SAMPLING_X2,     /* Temp. oversampling */
-            Adafruit_BMP280::SAMPLING_X16,    /* Pressure oversampling */
-            Adafruit_BMP280::FILTER_X16,      /* Filtering. */
-            Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
+	Configuration::onShowOutdoorTemperatureChange([](bool &arg) {});
+	if(!Configuration::getShowOutdoorTemperature()) {
+		scanSensors();
+	}
 }
 
 void BMPManager::scanSensors() {
@@ -57,12 +56,29 @@ void BMPManager::scanSensors() {
 			Serial.println("done\n");
 		}
 	}
-	else
+	else {
 		Serial.printf("BMP sensor found: %x\n", bmpSensor.sensorID());
+
+		bmpSensor.setSampling(Adafruit_BMP280::MODE_NORMAL,     /* Operating Mode. */
+				Adafruit_BMP280::SAMPLING_X2,     /* Temp. oversampling */
+				Adafruit_BMP280::SAMPLING_X16,    /* Pressure oversampling */
+				Adafruit_BMP280::FILTER_X16,      /* Filtering. */
+				Adafruit_BMP280::STANDBY_MS_500); /* Standby time. */
+		
+		sensorFound = true;
+	}
 }
 
 float BMPManager::getTemperature() {
-    float temp = bmpSensor.readTemperature();
+    float temp = 0;
+	if(Configuration::getShowOutdoorTemperature()) {
+		temp = WeatherManager::currentWeather.temperature;
+	} else {
+		if(!sensorFound) {
+			scanSensors();
+		}
+		temp = bmpSensor.readTemperature();
+	}
 	if(Configuration::getTempFahrenhite()) {
 		temp = (temp * 9)/5 + 32;
 	}
