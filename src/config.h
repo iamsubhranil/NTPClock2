@@ -1,6 +1,32 @@
 #pragma once
 
 #include <WString.h>
+#include <ArduinoJson.h>
+#include "time2.h"
+
+ARDUINOJSON_BEGIN_PUBLIC_NAMESPACE
+
+#define CUSTOM_TYPE(type)									\
+template <>													\
+struct Converter<type> {									\
+	static void toJson(const type& t, JsonVariant dst) { 	\
+		dst.set(t.toString()); 								\
+	} 														\
+															\
+	static Time fromJson(JsonVariantConst src) { 			\
+		return type::fromString(src.as<const char*>()); 	\
+	} 														\
+															\
+	static bool checkJson(JsonVariantConst src, type &t) {	\
+		return type::validate(src.as<const char*>()); 		\
+	}														\
+};
+
+CUSTOM_TYPE(Time)
+
+#undef CUSTOM_TYPE
+
+ARDUINOJSON_END_PUBLIC_NAMESPACE
 
 struct Configuration {
 #define OPTION(name, type, defaultValue, displayName)           \

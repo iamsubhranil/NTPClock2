@@ -9,7 +9,6 @@ struct DisplayManager {
 	static void      clear() { display.displayClear(); }
 	static void      print(const char *text) { display.print(text); }
 	static void      println(const char *text) { display.println(text); }
-	static void		 shutdownDisplay(bool value);
 
 	template <typename U, typename D, typename C>
 	static void printScrollingText(const String &str, U until, D doThen,

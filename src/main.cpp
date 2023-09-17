@@ -26,6 +26,7 @@ void setup() {
 	Animation::init();
 	Clock::init();
 	WeatherManager::init();
+	Timer::init();
 
 	Scheduler::every(1).minute().perform([]() { 
 		Scheduler::scheduleInBackground([](void *param) {

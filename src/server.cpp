@@ -13,17 +13,6 @@ char messageBuff[50] = {0};
 
 String generateField(String id, String label, const String &value,
                      String inputType) {
-
-	/*
-
-	        <div class="col-12">
-	        <div class="form-check">
-	            <input class="form-check-input" type="checkbox" id="gridCheck">
-	            <label class="form-check-label" for="gridCheck">
-	            Check me out
-	            </label>
-	        </div>
-	*/
 	if(inputType == "checkbox") {
 		return "<div class=\"col-12\"><div class=\"form-check\"><input "
 		       "class=\"form-check-input\" type=\"" +
@@ -54,6 +43,10 @@ String generateFieldForbool(String id, String label, const bool &value) {
 	return generateField(id, label, String(value), "checkbox");
 }
 
+String generateFieldForTime(String id, String label, const Time &value) {
+	return generateField(id, label, value.toString(), "time");
+}
+
 String generateHTML(const String &replace) {
 	String ret = "";
 #define OPTION(name, type, defaultValue, displayName) \
@@ -77,6 +70,10 @@ bool parsebool(const String &str) {
 
 float parsefloat(const String &str) {
 	return str.toFloat();
+}
+
+Time parseTime(const String &str) {
+	return Time::fromString(str);
 }
 
 void ServerManager::init() {

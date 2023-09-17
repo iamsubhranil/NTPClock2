@@ -74,10 +74,6 @@ const textEffect_t Effects[] = {
 #endif            // ENA_GROW};
 };
 
-void DisplayManager::shutdownDisplay(bool val) {
-    display.displayShutdown(val);
-}
-
 void DisplayManager::init() {
 	display.begin(0);
 	display.setIntensity(0);
