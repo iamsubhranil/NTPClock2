@@ -1,0 +1,41 @@
+{
+    "version": 1,
+    "author": "Anonymous maker",
+    "editor": "wokwi",
+    "parts": [
+      { "type": "wokwi-esp32-devkit-v1", "id": "esp", "top": -258.4, "left": -101.58, "attrs": {} },
+      {
+        "type": "wokwi-max7219-matrix",
+        "id": "matrix1",
+        "top": 204.3,
+        "left": 42.48,
+        "attrs": { "chain": "4", "layout": "fc16" }
+      },
+      {
+        "type": "wokwi-max7219-matrix",
+        "id": "matrix2",
+        "top": 203.88,
+        "left": -278.83,
+        "attrs": { "chain": "4", "layout": "fc16" }
+      },
+      { "type": "wokwi-vcc", "id": "vcc1", "top": -29.28, "left": -222.63, "attrs": {} },
+      { "type": "wokwi-gnd", "id": "gnd1", "top": 26.06, "left": -250.72, "attrs": {} }
+    ],
+    "connections": [
+      [ "esp:TX0", "$serialMonitor:RX", "", [] ],
+      [ "esp:RX0", "$serialMonitor:TX", "", [] ],
+      [ "matrix1:DIN", "esp:D23", "violet", [ "h29.49", "v-194.93", "h-395.3", "v-281.57" ] ],
+      [ "matrix2:CLK", "matrix1:CLK.2", "green", [ "h0" ] ],
+      [ "matrix2:CS", "matrix1:CS.2", "green", [ "h0" ] ],
+      [ "matrix2:DIN", "matrix1:DOUT", "green", [ "h0" ] ],
+      [ "matrix2:GND", "matrix1:GND.2", "black", [ "h0" ] ],
+      [ "matrix2:V+", "matrix1:V+.2", "green", [ "h0" ] ],
+      [ "matrix1:V+", "vcc1:VCC", "red", [ "v-68.94", "h-530.26" ] ],
+      [ "matrix1:GND", "gnd1:GND", "black", [ "v-64.84", "h-557.75" ] ],
+      [ "esp:VIN", "vcc1:VCC", "red", [ "h0" ] ],
+      [ "esp:GND.2", "gnd1:GND", "black", [ "h0" ] ],
+      [ "matrix1:CS", "esp:D5", "cyan", [ "h38.72", "v-195", "h-419.64" ] ],
+      [ "matrix1:CLK", "esp:D18", "orange", [ "h48.48", "v-163.5", "h-357.45", "v-274.5" ] ]
+    ],
+    "dependencies": {}
+  }
