@@ -13,7 +13,7 @@ const static int        schedulerPriority           = 1;
 void Scheduler::insertTask(Schedulable &a) {
 	tasks = (Schedulable *)realloc(tasks, sizeof(Schedulable) * ++taskCount);
 	tasks[taskCount - 1]           = a;
-	tasks[taskCount - 1].remaining = a.gap_millis;
+	tasks[taskCount - 1].remaining = 0; // run tasks the first time they are scheduled
 	if(a.gap_millis < granularityMills) {
 		granularityMills = a.gap_millis;
 	}
