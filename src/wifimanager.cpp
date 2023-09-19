@@ -33,8 +33,8 @@ void WiFiManager::setupAP() {
 	ServerManager::init();
 	LEDManager::blink(LEDManager::BLUE);
 	DisplayManager::printAnimatingText(
-	    {"\x1a    ClockAP    \x1b", "\x1a   ClockAP   \x1b",
-	     "\x1a  ClockAP  \x1b", "\x1a ClockAP \x1b"},
+	    {"\x1a   ClockAP   \x1b", "\x1a  ClockAP  \x1b",
+	     "\x1a ClockAP \x1b", "\x1a""ClockAP\x1b"},
 	    250, []() { return WiFiManager::isConnected(); },
 	    [&dnsServer]() { dnsServer.processNextRequest(); },
 	    [&dnsServer]() {
