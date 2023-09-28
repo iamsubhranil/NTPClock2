@@ -6,7 +6,7 @@ struct Time {
     int hours;
     int minutes;
 
-    Time(int a, int b, int c) : hours(a), minutes(b) {}
+    Time(int a, int b) : hours(a), minutes(b) {}
     Time() : hours(0), minutes(0) {}
 
     bool operator==(const Time &a) {
